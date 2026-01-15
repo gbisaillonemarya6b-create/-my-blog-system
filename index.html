@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase博客系统</title>
+    <!-- 引入Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="style.css">
+    <!-- 图标 -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📝</text></svg>">
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                📝 Supabase博客
+                <span class="admin-badge" id="admin-badge">管理员</span>
+            </div>
+            <nav>
+                <ul id="nav-menu">
+                    <!-- 导航项将由JavaScript动态生成 -->
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主内容区域 -->
+    <main class="container">
+        <!-- 注册页面 -->
+        <div id="register-page" class="page">
+            <div class="form-container">
+                <h2 class="form-title">注册新账户</h2>
+                <div id="register-error" class="error-message"></div>
+                <div id="register-success" class="success-message"></div>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-username">用户名</label>
+                        <input type="text" id="register-username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">电子邮箱</label>
+                        <input type="email" id="register-email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">密码</label>
+                        <input type="password" id="register-password" class="form-control" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-is-admin">
+                            <input type="checkbox" id="register-is-admin"> 注册为管理员 (需要邀请码)
+                        </label>
+                        <input type="text" id="admin-invite-code" class="form-control" placeholder="请输入管理员邀请码" style="display: none; margin-top: 10px;">
+                    </div>
+                    <button type="submit" class="btn btn-block">注册</button>
+                </form>
+                <div class="form-footer">
+                    <p>已有账户？<a href="#" id="go-to-login">登录</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 登录页面 -->
+        <div id="login-page" class="page active">
+            <div class="form-container">
+                <h2 class="form-title">登录到博客</h2>
+                <div id="login-error" class="error-message"></div>
+                <div id="login-success" class="success-message"></div>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">电子邮箱</label>
+                        <input type="email" id="login-email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">密码</label>
+                        <input type="password" id="login-password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-block">登录</button>
+                </form>
+                <div class="form-footer">
+                    <p>还没有账户？<a href="#" id="go-to-register">立即注册</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 博客页面 -->
+        <div id="blog-page" class="page">
+            <div class="blog-header">
+                <div>
+                    <h1 class="page-title">博客文章</h1>
+                    <p class="page-subtitle">点赞、评论、管理，一应俱全</p>
+                </div>
+                <div class="admin-controls" id="admin-controls" style="display: none;">
+                    <button id="admin-panel-btn" class="btn btn-warning">管理面板</button>
+                    <button id="create-post-btn" class="btn btn-success">新建文章</button>
+                </div>
+            </div>
+            
+            <!-- 管理员面板 -->
+            <div id="admin-panel" class="admin-panel" style="display: none;">
+                <h2>管理员面板</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>文章总数</h3>
+                        <div class="stat-value" id="total-posts">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>用户总数</h3>
+                        <div class="stat-value" id="total-users">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>总评论数</h3>
+                        <div class="stat-value" id="total-comments">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>总点赞数</h3>
+                        <div class="stat-value" id="total-likes">0</div>
+                    </div>
+                </div>
+                
+                <h3>文章管理</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>标题</th>
+                            <th>作者</th>
+                            <th>点赞</th>
+                            <th>评论</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-posts-table">
+                        <!-- 文章管理行将由JavaScript动态生成 -->
+                    </tbody>
+                </table>
+                
+                <h3 style="margin-top: 30px;">用户管理</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>用户名</th>
+                            <th>邮箱</th>
+                            <th>注册时间</th>
+                            <th>角色</th>
+                            <th>文章数</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-users-table">
+                        <!-- 用户管理行将由JavaScript动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="posts-container" class="posts-container">
+                <!-- 博客文章将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </main>
+
+    <!-- 创建/编辑文章模态框 -->
+    <div id="post-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">创建新文章</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="post-form">
+                    <div class="form-group">
+                        <label for="post-title">文章标题</label>
+                        <input type="text" id="post-title" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="post-content">文章内容</label>
+                        <textarea id="post-content" class="form-control" rows="12" required></textarea>
+                    </div>
+                    <button type="submit" class="btn" id="post-submit-btn">发布文章</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 查看文章详情模态框 -->
+    <div id="view-post-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="view-post-title"></h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="post-meta" id="view-post-meta"></div>
+                <div class="post-full-content" id="view-post-content"></div>
+                
+                <!-- 点赞和评论区域 -->
+                <div class="post-stats" style="margin-top: 20px; border: none; background: none;">
+                    <button class="like-btn" id="view-post-like-btn">
+                        <span class="like-icon">❤️</span>
+                        <span id="view-post-likes-count">0</span> 点赞
+                    </button>
+                    <div class="comment-count">
+                        <span class="comment-icon">💬</span>
+                        <span id="view-post-comments-count">0</span> 条评论
+                    </div>
+                </div>
+                
+                <!-- 评论区域 -->
+                <div class="comments-section">
+                    <h4 class="comments-title">评论</h4>
+                    
+                    <div class="comment-form">
+                        <textarea id="new-comment" placeholder="写下你的评论..."></textarea>
+                        <button class="btn" id="submit-comment-btn">提交评论</button>
+                    </div>
+                    
+                    <div id="comments-list">
+                        <!-- 评论将由JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Supabase博客系统 | 包含点赞、评论、管理员功能</p>
+        </div>
+    </footer>
+
+    <!-- 引入JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

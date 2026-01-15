@@ -1,0 +1,17 @@
+#系统文件
+
+.DS_Store
+Thumbs.db
+
+#编辑器文件
+
+.vscode/
+.idea/
+
+#环境变量
+
+.env
+.env.local
+
+#日志文件
+*.log   
