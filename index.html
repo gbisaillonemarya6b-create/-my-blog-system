@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的博客系统</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📝</text></svg>">
+</head>
+<body>
+    <!-- 头部 -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                📝 我的博客
+                <span class="admin-badge" id="admin-badge">管理员</span>
+            </div>
+            <nav>
+                <ul id="nav-menu"></ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主内容 -->
+    <main class="container">
+        <!-- 注册页面 -->
+        <div id="register-page" class="page">
+            <div class="form-container">
+                <h2 class="form-title">注册新账户</h2>
+                <div id="register-error" class="error-message"></div>
+                <div id="register-success" class="success-message"></div>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-username">用户名</label>
+                        <input type="text" id="register-username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">电子邮箱</label>
+                        <input type="email" id="register-email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">密码</label>
+                        <input type="password" id="register-password" class="form-control" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn btn-block">注册</button>
+                </form>
+                <div class="form-footer">
+                    <p>已有账户？<a href="#" id="go-to-login">登录</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 登录页面 -->
+        <div id="login-page" class="page active">
+            <div class="form-container">
+                <h2 class="form-title">登录</h2>
+                <div id="login-error" class="error-message"></div>
+                <div id="login-success" class="success-message"></div>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">电子邮箱</label>
+                        <input type="email" id="login-email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">密码</label>
+                        <input type="password" id="login-password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-block">登录</button>
+                </form>
+                <div class="form-footer">
+                    <p>还没有账户？<a href="#" id="go-to-register">立即注册</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 博客页面 -->
+        <div id="blog-page" class="page">
+            <div class="blog-header">
+                <h1 class="page-title">博客文章</h1>
+                <button id="create-post-btn" class="btn btn-success">新建文章</button>
+            </div>
+            <div id="posts-container" class="posts-container">
+                <!-- 文章将在这里显示 -->
+            </div>
+        </div>
+    </main>
+
+    <!-- 创建文章模态框 -->
+    <div id="post-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">创建新文章</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="post-form">
+                    <div class="form-group">
+                        <label for="post-title">文章标题</label>
+                        <input type="text" id="post-title" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="post-content">文章内容</label>
+                        <textarea id="post-content" class="form-control" rows="10" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">发布文章</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 我的博客系统 | 使用Supabase + GitHub Pages</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
